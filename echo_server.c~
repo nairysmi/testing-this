@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <time.h>
+#include <dirent.h>
+#include <assert.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+int main() {
+
+  int SDfromClient;
+  int newSD;
+  char messageFromClient[255];
+  char messageToClient[255];//aka pid #
+  int DefaultPort=8080;
+  struct sockaddr{
+    sa_family_t sinfamily; //AF_INET
+    in_port_t sin_port; //is a port number
+    struct in_addr sin_addr; //an IP address
+  };
+
+  struct in_addr {
+    uint32_t s_addr;     /* address in network byte order */
+  };
+  struct sockaddr *destination;
+  destination=(struct sockaddr *)malloc(sizeof(struct sockaddr));
+  destination->sinfamily=AF_INET;
+  destination->sin_port=htons(DefaultPort);
+  destination->sin_addr->s_addr=INADDR_ANY;
+
+  umask(0000);
+    
+  SDfromClient=socket(AF_INET,SOCK_STREAM,0);
+  bind(SDfromClient,destination, sizeof(struct in_addr));
+  listen(SDfromClient, 2);
+  newSD=accept(SDfromClient,/*pointer*/, sizeof(struct in_addr));
+  read(newSD,messageFromClient,255);
+  printf("Message from client: %s", messageFromClient);
+  write(newSD, messageToClient, strlen(messageToClient)+1);
+  
+  shutdown(newSDfromClient, SHUT_RDWR);
+ 
+  
+  return 1;
+}

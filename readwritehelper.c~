@@ -1,0 +1,32 @@
+#include "readwritehelper.h"
+
+
+char * readhelp(int SD, char *string, int max)
+{
+  int counter=0;
+  char *tmp;
+  while (counter<=max && read(SD,tmp,1))
+    {
+      if (strcmp(tmp,NULL)==0)
+	{
+	  return string;
+	}
+      else if(strcmp(tmp, "/n")==0)
+	{
+	  string=strcat(string,NULL);
+	  return string;
+	}
+      else
+	{
+	  string=strcat(string,tmp);
+	}
+
+    }
+  return string;
+ 
+}
+
+writehelp(int SD, char * string, int len)
+{
+
+}

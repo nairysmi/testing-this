@@ -15,7 +15,7 @@
 #include "readwritehelper.h"
 #include "portNUMS_defined.h"
 
-takeclient(struct sockaddr_in, int);
+takeclient(struct sockaddr_in, int, struct device);
 
 
 int main(int argc, char *argv[])
@@ -38,19 +38,23 @@ int main(int argc, char *argv[])
       return 0;
     }
   else if(argc==2)
-     {
-       specs.name=argv[1];
-       specs.id=1;
-       port=portnumhelper(specs.name, specs.id);
-       if (port!=-1)
-	 printf("PORT: %d \n", port);
-       else
-	 return 0;
-    
-             // printf("STORED name=%s   %d \n", specs.name,specs.id);
-     }
+    {
+      specs.power=1;
+      specs.variable=-1;
+      specs.name=argv[1];
+      specs.id=1;
+      port=portnumhelper(specs.name, specs.id);
+      if (port!=-1)
+	printf("PORT: %d \n", port);
+      else
+	return 0;
+      
+      // printf("STORED name=%s   %d \n", specs.name,specs.id);
+    }
   else
      {
+       specs.power=1;
+       specs.variable=-1;
        specs.name=argv[1];
        specs.id=atoi(argv[2]);
        port=portnumhelper(specs.name, specs.id);
@@ -94,12 +98,12 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////  
 
   while(1)
-    takeclient(destination, SDfromClient);
+    takeclient(destination, SDfromClient,specs);
   shutdown(SDfromClient, SHUT_RDWR);
  return 1;
 }
 
-takeclient(struct sockaddr_in destination, int SDfromClient)
+takeclient(struct sockaddr_in destination, int SDfromClient, struct device specs)
 {
   int newSD;
   int f;
@@ -114,12 +118,17 @@ takeclient(struct sockaddr_in destination, int SDfromClient)
     f=fork();
     if(f==0)//child
       {
-	
-	strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
-	printf("Message from client: %s\n", messageFromClient);
-	strcpy(&messageToClient, &messageFromClient);
-	printf("messageToClient is: %s \n", messageToClient);
-	writehelp(newSD, messageToClient, strlen(messageToClient)+1);
+	while(1)
+	  {
+	    strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
+	    printf("Message from client: %s\n", messageFromClient);
+	    takecommands(messageFromClient,specs,newSD);
+	  }
+
+
+	//strcpy(&messageToClient, &messageFromClient);
+	//printf("messageToClient is: %s \n", messageToClient);
+	//writehelp(newSD, messageToClient, strlen(messageToClient)+1);
 	
 	close(newSD);	
       }

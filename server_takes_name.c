@@ -1,3 +1,5 @@
+/* -*- mode: C; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,16 +22,16 @@ takeclient(struct sockaddr_in, int, struct device);
 
 int main(int argc, char *argv[])
 {
-   int SDfromClient; int checknum=0;
+  int SDfromClient; int checknum=0;
   int DefaultPort=8080;
   int port;
 
 
-  int test=light;
-  if(test=8000)
-    printf("light defined \n" );
-  else
-    printf("light not defined\n");
+  // int test=light;
+  //if(test==8000)
+  // printf("light defined \n" );
+  // else
+  // printf("light not defined\n");
   struct device specs;
   // printf("argc: %d\n", argc);
   if(argc==1)//no inputs
@@ -39,8 +41,8 @@ int main(int argc, char *argv[])
     }
   else if(argc==2)
     {
-      specs.power=1;
-      specs.variable=-1;
+      specs.power=5;
+      specs.variable=-5;
       specs.name=argv[1];
       specs.id=1;
       port=portnumhelper(specs.name, specs.id);
@@ -53,8 +55,8 @@ int main(int argc, char *argv[])
     }
   else
      {
-       specs.power=1;
-       specs.variable=-1;
+       specs.power=5;
+       specs.variable=-5;
        specs.name=argv[1];
        specs.id=atoi(argv[2]);
        port=portnumhelper(specs.name, specs.id);
@@ -62,8 +64,6 @@ int main(int argc, char *argv[])
 	 printf("PORT: %d \n", port);
        else
 	 return 0;
-
-       //  printf("STORED name %s id:%s STORED int:%d \n", specs.name, argv[2],specs.id);
      }
   
   umask(0000);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
   if ( (checknum = bind(SDfromClient, (struct sockaddr *) &destination, sizeof(destination))) < 0) {
     printf("bind failed\n");
-    return 0;}
+    return 0;} 
   else {
     printf("Successful bind\n"); }
 
@@ -94,47 +94,42 @@ int main(int argc, char *argv[])
     return 0; }
   else {
     printf("Listening on INADDR_ANY\n");}
-
+  
   /////////////////////////////////////////////////  
-
+  
   while(1)
     takeclient(destination, SDfromClient,specs);
+  
+  
   shutdown(SDfromClient, SHUT_RDWR);
- return 1;
+  return 1;
 }
 
 takeclient(struct sockaddr_in destination, int SDfromClient, struct device specs)
 {
   int newSD;
   int f;
-  char messageFromClient[255]; char messageToClient[255];//aka pid #
-  if ( (newSD=accept(SDfromClient, NULL, NULL)) < 0  )
-    {
-      printf ("accept failed\n");
-      return 0;
-    } 
+  char messageFromClient[255]; char messageToClient[255];
+  
+  if ( (newSD=accept(SDfromClient, NULL, NULL)) < 0  ) {
+    printf ("accept failed\n");
+    return 0;} 
   else {
     printf("Accepting connections...\n"); 
     f=fork();
-    if(f==0)//child
-      {
-	while(1)
-	  {
-	    strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
-	    printf("Message from client: %s\n", messageFromClient);
-	    takecommands(messageFromClient,specs,newSD);
-	  }
-
-
-	//strcpy(&messageToClient, &messageFromClient);
-	//printf("messageToClient is: %s \n", messageToClient);
-	//writehelp(newSD, messageToClient, strlen(messageToClient)+1);
-	
-	close(newSD);	
-      }
-    close(newSD);//because parent has a "copy" of the newSD
-  }
-    
+    if(f==0){ //child
+      while(1){
+        strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
+        printf("Message from client: %s\n", messageFromClient);
+        specs.power=1;
+        specs.variable=-1;      
+        
+        takecommands(messageFromClient,specs,newSD);}
+      //strcpy(&messageToClient, &messageFromClient);
+      //printf("messageToClient is: %s \n", messageToClient);
+      //writehelp(newSD, messageToClient, strlen(messageToClient)+1);
+      
+      close(newSD); }
+    close(newSD);}//because parent has a "copy" of the newSD
+  
 }
-  
-  

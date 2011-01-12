@@ -1,3 +1,5 @@
+/* -*- mode: C; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+
 #include "portNUMS_defined.h"
 #include <stdio.h>
 #include <string.h>

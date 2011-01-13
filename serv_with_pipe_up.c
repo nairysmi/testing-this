@@ -120,15 +120,27 @@ takeclient(struct sockaddr_in destination, int SDfromClient, struct device *SPEC
   int f;
   char messageFromClient[255]; char messageToClient[255];
   
+
+
   if ( (newSD=accept(SDfromClient, NULL, NULL)) < 0  ) {
     printf ("accept failed\n");
     return 0;} 
   else {
     printf("Accepting connections...\n"); 
+    
+    int array[2];
+    pipe(&array[0]);
+    
+      
+    
     f=fork();
     if(f==0){ //child
       // SPEC->power=-1;
       // SPEC->variable=1;
+      
+      
+      
+     
       while(1){
         strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
         printf("Message from client: %s\n", messageFromClient);
@@ -138,12 +150,27 @@ takeclient(struct sockaddr_in destination, int SDfromClient, struct device *SPEC
         if(b= takecommands(messageFromClient,SPEC,newSD)<0)
           break;
       }
-      //strcpy(&messageToClient, &messageFromClient);
-      //printf("messageToClient is: %s \n", messageToClient);
-      //writehelp(newSD, messageToClient, strlen(messageToClient)+1);
-      
-        close(newSD);
+
+      close(array[0]);
+      char s [10]="hello";
+      write(array[1], s, strlen(s)+1);
+      printf("child writes: %s \n", s);
+      // char q[10]="bye";
+      //write(array[1],q,strlen(q)+1);
+      //printf("child writes: %s \n", q);
+     
+      printf("GOT HERE0\n");
+      close(newSD);
+      printf("GOT HERE1 \n");
     }
+    printf("GOT HERE!!\n");
+    close(array[1]);
+    char * buffer;
+    read(array[0],buffer, 50);
+    printf("Parent read: buffer: %s \n", buffer);
+    //read(array[0],buffer, 50);
+    //printf("Parent read 2: buffer: %s \n", buffer);
+   
     close(newSD);//because parent has a "copy" of the newSD
   }
   

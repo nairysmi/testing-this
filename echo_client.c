@@ -13,6 +13,26 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+/* -*- mode: C; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <time.h>
+#include <dirent.h>
+#include <assert.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include "readwritehelper.h"
+#include "portNUMS_defined.h"
+
+
 int main() {
 
   int SDtoServer;
@@ -20,20 +40,13 @@ int main() {
   //  int connectnum;
   char message[255];
   char clientname[255];//aka pid #
-  struct sockaddr{
-    sa_family_t sinfamily; //AF_INET
-    in_port_t sin_port; //is a port number
-    struct in_addr sin_addr; //an IP address
-  };
+  struct sockaddr_in destination;
 
-  struct in_addr {
-    uint32_t s_addr;     /* address in network byte order */
-  };
-  struct sockaddr *destination;
-  destination=(struct sockaddr *)malloc(sizeof(struct sockaddr));
-  destination->sinfamily=AF_INET;
-  destination->sin_port=htons(8080);
-  ( destination->sin_addr)->s_addr=htonl(127.0.0.1);
+  umask(0000);
+  memset(&destination, 0, sizeof(destination));
+  destination.sin_family=AF_INET;
+  destination.sin_port=htons(8004);
+  destination.sin_addr=htonl(127.0.0.1);
 
   
 
@@ -41,10 +54,18 @@ int main() {
   sprintf(clientname, "%d", getpid()); // sets the name to be the pid
   
   SDtoServer=socket(AF_INET,SOCK_STREAM,0);
-  connect(SDtoServer,destination, /*??length of address???*/);
-  sendto(SDtoServer, clientname, strlen(clientname)+1,/*FLAGSSS*/, destination, /*lenth again*/);
-  read(SDtoServer,message,255,/*FLAGSS*/);
+  if (SDtoServer <0)
+    printf("socket failed from client\n");
+  else
+    printf("socket worked from client\n");
+  if(connect(SDtoServer,(struct sockaddr *) &destination, sizeof(destination)) < 0)
+    printf("connection failed\n");
+  else
+    printf("connection worked \n");
   
+
+  writehelp(SDtoServer, clientname,strlen(clientname)+1);
+  readhelp(SDtoServer, message, 255); 
  
   printf("message: %s ", message);
   

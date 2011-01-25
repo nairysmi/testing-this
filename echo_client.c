@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   char sending[255];
   fgets(sending, 255, stdin);
   sending[strlen(sending)-1]='\0';
-  printf("what i inputted: %s \n", sending);
+  // printf("what i inputted: %s \n", sending);
   
   
   writehelp(SDtoServer, sending,strlen(sending)+1);

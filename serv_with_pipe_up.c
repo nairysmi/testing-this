@@ -16,6 +16,8 @@
 #include <arpa/inet.h>
 #include "readwritehelper.h"
 #include "portNUMS_defined.h"
+#include <sys/types.h>
+#include <sys/wait.h>
 
 takeclient(struct sockaddr_in, int, struct device*);
 
@@ -150,28 +152,37 @@ takeclient(struct sockaddr_in destination, int SDfromClient, struct device *SPEC
         if(b= takecommands(messageFromClient,SPEC,newSD)<0)
           break;
       }
-
+      
       close(array[0]);
       char s [10]="hello";
-      write(array[1], s, strlen(s)+1);
-      printf("child writes: %s \n", s);
+      int num;
+      num=write(array[1], s, strlen(s)+1);
+      printf("child writes: %s #chars %d \n", s, num);
       // char q[10]="bye";
       //write(array[1],q,strlen(q)+1);
       //printf("child writes: %s \n", q);
-     
+      
       printf("GOT HERE0\n");
       close(newSD);
       printf("GOT HERE1 \n");
     }
     printf("GOT HERE!!\n");
-    close(array[1]);
+    
+    close(newSD);//because parent has a "copy" of the newSD
+    
+    
+    int status;
+    wait(&status);
     char * buffer;
-    read(array[0],buffer, 50);
-    printf("Parent read: buffer: %s \n", buffer);
+    // close(array[1]);
+    int numread=0;
+    numread=read(array[0],buffer, 50);
+    printf("Parent read: buffer: BLANKKKK numread: %d \n"/*, buffer*/, numread);
+    printf("%m \n");
     //read(array[0],buffer, 50);
     //printf("Parent read 2: buffer: %s \n", buffer);
    
-    close(newSD);//because parent has a "copy" of the newSD
+   
   }
   
 }

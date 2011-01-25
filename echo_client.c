@@ -67,7 +67,10 @@ int main(int argc, char *argv[])
   else
     printf("connection worked \n");
   
-  char sending[255]="lets try again\n";
+  char sending[255];
+  fgets(sending, 255, stdin);
+  sending[strlen(sending)-1]='\0';
+  printf("what i inputted: %s \n", sending);
   
   
   writehelp(SDtoServer, sending,strlen(sending)+1);

@@ -67,8 +67,10 @@ int main(int argc, char *argv[])
   else
     printf("connection worked \n");
   
+  char sending[255]="lets try again\n";
   
-  writehelp(SDtoServer, "fivety0",8);
+  
+  writehelp(SDtoServer, sending,strlen(sending)+1);
   readhelp(SDtoServer, message, 255); 
  
   printf("message: %s ", message);

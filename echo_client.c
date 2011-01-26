@@ -55,31 +55,41 @@ int main(int argc, char *argv[])
   
 
   umask(0000);
-  sprintf(clientname, "%d", getpid()); // sets the name to be the pid
-  
-  SDtoServer=socket(AF_INET,SOCK_STREAM,0);
-  if (SDtoServer <0)
-    printf("socket failed from client\n");
-  else
-    printf("socket worked from client\n");
-  if(connect(SDtoServer,(struct sockaddr *) &destination, sizeof(destination)) < 0)
-    printf("connection failed\n");
-  else
-    printf("connection worked \n");
-  
-  char sending[255];
-  fgets(sending, 255, stdin);
-  sending[strlen(sending)-1]='\0';
-  // printf("what i inputted: %s \n", sending);
-  
-  
-  writehelp(SDtoServer, sending,strlen(sending)+1);
-  readhelp(SDtoServer, message, 255); 
  
-  printf("message: %s ", message);
+  while(1){
+    SDtoServer=socket(AF_INET,SOCK_STREAM,0);
+    if (SDtoServer <0)
+      printf("socket failed from client\n");
+    else
+      printf("socket worked from client\n");
+    
+    
+    if(connect(SDtoServer,(struct sockaddr *) &destination, sizeof(destination)) < 0)
+      printf("connection failed\n");
+    else
+      printf("connection worked \n");
+    
+    
+    char sending[255];
+    fgets(sending, 255, stdin);
+    sending[strlen(sending)-1]='\0';
+    // printf("what i inputted: %s \n", sending);
+    
+    
+    writehelp(SDtoServer, sending,strlen(sending)+1);
+    readhelp(SDtoServer, message, 255); 
+    
+    printf("message: %s ", message);
+    if (strcmp("enter new number:",message)==0)
+      {
+        char newtemp[255];
+        fgets(newtemp, 255, stdin);
+        newtemp[strlen(newtemp)-1]='\0';
+        writehelp(SDtoServer,newtemp,strlen(newtemp)+1);
+      }
   
-  shutdown(SDtoServer, SHUT_RDWR);
-
+    shutdown(SDtoServer, SHUT_RDWR);
+  }
 
   return 1;
 }

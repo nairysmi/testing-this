@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
   //struct sockaddr clientinfo; 
   //memset(&clientinfo, 0, sizeof(clientinfo));
   
+  
   printf("before anything\n");
   
   SDfromClient=socket(AF_INET,SOCK_STREAM,0);
@@ -101,13 +102,14 @@ int main(int argc, char *argv[])
   
   /////////////////////////////////////////////////  
   
-  while(1){
+  while(1){// i think this allows for multiple clients and I can delete it later
     printf(" spec.power: %d and specs.variable: %d \n", specs->power, specs->variable);
     takeclient(destination, SDfromClient,specs);
     printf(" spec.power: %d and specs.variable: %d \n", specs->power, specs->variable);
   }
   
   shutdown(SDfromClient, SHUT_RDWR);
+  
   return 1;
 }
 
@@ -125,18 +127,19 @@ takeclient(struct sockaddr_in destination, int SDfromClient, struct device *SPEC
   else {
     printf("Accepting connections...\n"); 
     
-    while(1){
-      strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
-      printf("Message from client: %s\n", messageFromClient);
-      // specs.power=specs.power;
-      // specs.variable=specs.variable;      
-      int b=0;
-      if(b= takecommands(messageFromClient,SPEC,newSD)<0)
-	break;
-    } 
+    // while(1){
+    strcpy(&messageFromClient,(char *)readhelp(newSD,&messageFromClient,255));
+    printf("Message from client: %s\n", messageFromClient);
+    // specs.power=specs.power;
+    // specs.variable=specs.variable;      
+    // int b=0;
+    // if(b=
+    takecommands(messageFromClient,SPEC,newSD);//<0)
+    //break;
+    //  } 
     
     
-    close(newSD);//because parent has a "copy" of the newSD
+    close(newSD);
   }
   
 }

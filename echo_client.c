@@ -24,6 +24,8 @@
 int main(int argc, char *argv[])
 {
   int port;
+
+  //ASSURE THERE ARE THREE ARGUEMENTS AND SET THE PORT AND HOST
   struct hostent * host;
   if ( argc==1 || argc==2 ) {
     printf("put a host name and port number!!\n");
@@ -39,46 +41,40 @@ int main(int argc, char *argv[])
   }
   
   int SDtoServer;
-  //int SDfromSubServer;
-  //  int connectnum;
   char message[255];
-  char clientname[255];//aka pid #
   struct sockaddr_in destination;
 
+  //INITIALIZE ALL THE SOCKADDR_IN VARIABLES
   umask(0000);
   memset(&destination, 0, sizeof(destination));
   destination.sin_family=AF_INET;
-
   memcpy((char*)&destination.sin_addr.s_addr, (char *)host->h_addr, host->h_length);
   destination.sin_port=htons(port);
-
-  
-
-  umask(0000);
  
+  //MAKE AND CONNECT THE SOCKET
   while(1){
     SDtoServer=socket(AF_INET,SOCK_STREAM,0);
     if (SDtoServer <0)
       printf("socket failed from client\n");
-    else
-      printf("socket worked from client\n");
+    //else printf("socket worked from client\n");
     
     
     if(connect(SDtoServer,(struct sockaddr *) &destination, sizeof(destination)) < 0)
-      printf("connection failed\n");
-    else
-      printf("connection worked \n");
+      {
+        printf("No such appliance!\n");exit(1);}
+    //else printf("connection worked \n");
     
-    
+    //TAKE IN A 3 PART COMMAND 
+    printf("TYPE APPLIANCE TYPE, APPIANCE ID, AND COMMAND: \n");
     char sending[255];
     fgets(sending, 255, stdin);
     sending[strlen(sending)-1]='\0';
-    // printf("what i inputted: %s \n", sending);
-    
-    
+       
+    // PASS THE MESSAGE ALONG TO THE CENTRAL SERVER AND WAIT FOR A REPLY
     writehelp(SDtoServer, sending,strlen(sending)+1);
     readhelp(SDtoServer, message, 255); 
     
+    //IF THE COMMAND REQUIRES A SECOND INPUT, TYPE IN SECOND INPUT
     printf("message: %s ", message);
     if (strcmp("enter new number:",message)==0)
       {

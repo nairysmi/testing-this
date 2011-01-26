@@ -1,0 +1,10 @@
+My universal remote is complete. 
+
+
+The only possible thing to add would be more cool capabilities.Further improvements are a matter of choice and preference. 
+
+One idea was a timer to turn the appliance off at a certain time of the day based on real time.
+Another idea was to store appliance states even when the appliance terminal is closed.
+The last idea was to actually hook a device up to the computer instead of using terminal windows as virtual devices. 
+
+

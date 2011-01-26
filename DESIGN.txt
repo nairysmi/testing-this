@@ -1,0 +1,18 @@
+1.       Adam Yabroudi
+
+2.      I am creating a virtual universal remote. I am creating a server/client based sytem where the central server acts as the universal remote and has access to every appliance. A client connects to the central server and through the central server controls each appliance. The connections will take place through sockets so the central server and appliances can be held on one computer and the client can connect to the central server from another computer as long as the IP address is known. 
+
+
+3.       The user will be the client. The user must first initialize the appliances and the central server and then as a client from any computer control the states of any of the appliances. 
+
+4.   
+
+a.       I will be making the whole project. I first designed code to test networking by using telnet and a server I created. I then created helper functions to ensure reading and writing occured. I used TCP for added reliability. I then made structs to store appliance states. I then created client code to function how I desired. I finished with a central server to act as both a client to the appliances and a server to the main client. I created my own protocol to deal with how the client connects to the appliances and what commands to use. 
+
+
+b.     I will use structs and arrays to store data such as appliance states. I will use built in structs to handle networking. I will use sockets to connect and I will use defined numbers to help create port numbers unique to a device. I will use .h files and make files to help clear up the code and make functions accessible to multiple pieces of code. 
+
+5.       Networking is definitely my biggest thing. I use lots of sockets to control interactions between the client, central server, and multiple appliances. In the minisegments of code leading up to the final project I had the appliances handle multiple clients at once through forking and piping. An issue with my planning lead me to not needing those for the final segments of code. Clients and servers will be used as well as .h files .c files and make files. Networking lessons on protocols and systems will be covered through an understanding of sockets and connections over the internet. Structs will be used to handle data storage.
+
+
+6.       Estimated time for completion: 90 hours. I will work whenever possible in the free time between robotics and college interviews and homework and finals. I completed the server networking over the internet with sockets and telnet over the winter break and taught myself sockets. By the 7th I had a forking appliance with the appliance having networking and taking protocol commands. By the 16th I had a client with successful helper functions and by the 19th I had a central server and a completed project. 

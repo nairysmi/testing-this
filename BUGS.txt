@@ -1,0 +1,9 @@
+
+12/27-12/28    Put Char * instead of char [].  					12/28 Debugged code until I figured this out. Malloced strings and never forgot this 											problem again.
+
+
+1/8-1/13 Pipes weren't functioning and weren't sending data up to the parents.  1/12 Restructured code and removed pipes.
+
+1/15-1/16 readwritehelper.c wasn't functioning.  				1/16 Fixed helper functions.
+
+1/18 Parsing of 3 part string in central_server.c				1/18 Fixed
